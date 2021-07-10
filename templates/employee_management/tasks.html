@@ -1,0 +1,347 @@
+{% extends 'employee_management/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="page-wrapper">
+			
+	<!-- Page Content -->
+	<div class="content container-fluid">
+	
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Task</h3>
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item"><a href="/index">Dashboard</a></li>
+						<li class="breadcrumb-item active">Task</li>
+					</ul>
+				</div>
+				<div class="col-auto float-right ml-auto">
+					<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_task"><i class="fa fa-plus"></i> Add Task</a>
+					<div class="view-icons">
+						<a href="/tasks" class="grid-view btn btn-link active"><i class="fa fa-th"></i></a>
+						<a href="/tasks-list" class="list-view btn btn-link"><i class="fa fa-bars"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+		
+		<!-- Search Filter -->
+		<div class="row filter-row">
+			<div class="col-sm-6 col-md-3">  
+				<div class="form-group form-focus">
+					<input type="text" id="project_id" class="form-control floating">
+					<label class="focus-label">Project ID</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">  
+				<div class="form-group form-focus">
+					<input type="text" id="task_staus" class="form-control floating">
+					<label class="focus-label">Task Status</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3"> 
+				<div class="form-group form-focus">
+					<input type="text" id="developer" class="form-control floating">
+					<label class="focus-label">Developer</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">  
+				<button onclick="searchdeveloper()" class="btn btn-success btn-block"> Search </button>
+			</div>
+		</div>
+		<!-- Search Filter -->
+		
+		<div class="row staff-grid-row">
+			{% for i in tasksqs %}
+				<div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+					<div class="profile-widget">
+						<div class="dropdown profile-action">
+							<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+						<div class="dropdown-menu dropdown-menu-right">
+							<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_client"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+						</div>
+						</div>
+						<h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="client-profile.html">{{i.task_name}}</a></h4>
+						<h5 class="user-name m-t-10 mb-0 text-ellipsis"><a href="client-profile.html">{{i.get_task_status_display}}</a></h5>
+						<div class="small text-muted">{{i.get_task_priority_display}}</div>
+						<a href="client-profile.html" class="btn btn-white btn-sm m-t-10">View Task</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<!-- /Page Content -->
+	
+	<!-- Add Task Modal -->
+	<div id="add_task" class="modal custom-modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add Employee</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="tasks-create" method="POST" id="taskscreateid">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Task Name <span class="text-danger">*</span></label>
+									<input class="form-control" name="task_name" id="task_name" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Project <span class="text-danger">*</span></label>
+									<select class="select form-control" name="project_id" id="project_id">
+										{% for i in projectsqs %}
+											<option value={{i.project_id}}>{{i.project_name}}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Task Developer <span class="text-danger">*</span></label>
+									<select class="select form-control" name="developer_id" id="developer_id">
+										{% for i in developerqs %}
+											<option value={{i.id}}>{{i.username}}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Task Priority <span class="text-danger">*</span></label>
+									<select class="select form-control" name="priority" id="priority">
+										<option value="1">High</option>
+										<option value="2">Medium</option>
+										<option value="3">Low</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6">  
+								<div class="form-group">
+									<label class="col-form-label">Start Date <span class="text-danger">*</span></label>
+									<div class="cal-icon"><input class="form-control datetimepicker" name="start_date" id="start_date" type="text"></div>
+								</div>
+							</div>
+							<div class="col-sm-6">  
+								<div class="form-group">
+									<label class="col-form-label">End Date <span class="text-danger">*</span></label>
+									<div class="cal-icon"><input class="form-control datetimepicker" name="end_date" id="end_date" type="text"></div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Estimated Hours </label>
+									<input class="form-control" name="estimated_hours" id="estimated_hours" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Upload Files</label>
+                                    <input class="form-control" name="task_file" id="task_file" type="file">
+                                </div>
+                            </div>
+							<div class="col-sm-6">
+								<div class="form-group">
+								<label>Description</label>
+								<textarea rows="4" class="form-control summernote" name="description" id="description" placeholder="Enter your message here"></textarea>
+							</div>
+
+						</div>
+						
+						<div class="submit-section">
+							<button type="submit" class="btn btn-primary submit-btn">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Add Task Modal -->
+	
+	<!-- Edit Employee Modal -->
+	<div id="edit_employee" class="modal custom-modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Employee</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">First Name <span class="text-danger">*</span></label>
+									<input class="form-control" value="John" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Last Name</label>
+									<input class="form-control" value="Doe" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Username <span class="text-danger">*</span></label>
+									<input class="form-control" value="johndoe" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Email <span class="text-danger">*</span></label>
+									<input class="form-control" value="johndoe@example.com" type="email">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Password</label>
+									<input class="form-control" value="johndoe" type="password">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Confirm Password</label>
+									<input class="form-control" value="johndoe" type="password">
+								</div>
+							</div>
+							<div class="col-sm-6">  
+								<div class="form-group">
+									<label class="col-form-label">Employee ID <span class="text-danger">*</span></label>
+									<input type="text" value="FT-0001" readonly class="form-control floating">
+								</div>
+							</div>
+							<div class="col-sm-6">  
+								<div class="form-group">
+									<label class="col-form-label">Joining Date <span class="text-danger">*</span></label>
+									<div class="cal-icon"><input class="form-control datetimepicker" type="text"></div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Phone </label>
+									<input class="form-control" value="9876543210" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Company</label>
+									<select class="select">
+										<option>Global Technologies</option>
+										<option>Delta Infotech</option>
+										<option selected>International Software Inc</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Department <span class="text-danger">*</span></label>
+									<select class="select">
+										<option>Select Department</option>
+										<option>Web Development</option>
+										<option>IT Management</option>
+										<option>Marketing</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Designation <span class="text-danger">*</span></label>
+									<select class="select">
+										<option>Select Designation</option>
+										<option>Web Designer</option>
+										<option>Web Developer</option>
+										<option>Android Developer</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="submit-section">
+							<button class="btn btn-primary submit-btn">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Edit Employee Modal -->
+</div>
+
+<script>
+
+	$(document).ready(function(){
+		$("#taskscreateid").submit(function(){
+			$("#taskscreateid").ajaxSubmit({
+				success: function (response) {
+					if(typeof response =='object')
+					{
+						alert("Task Created Succesfully!")
+					}
+					else
+					{
+						alert("Something went Wronge!")
+					}
+				}
+			});
+			return false;
+		});
+
+	});
+
+	function searchemployee(){
+		var emp_id = $('#emp_id').val()
+		var emp_name = $('#emp_name').val()
+		var emp_designation = $('#emp_designation option:selected').val()
+
+		console.log(emp_id)
+		console.log(emp_name)
+		console.log(emp_designation)
+		$.ajax({
+			type: "POST",
+			url: "employees-search",
+			data: {empid:emp_id , empname:emp_name,empdesignation : emp_designation} ,
+			success: function (response) {
+					console.log(response)
+				 debugger;
+				var str = "";
+				$("#empdev").empty();
+				for(var i=0;i<response.data.length;i++)
+				{
+				str = str + '<div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">'
+				str = str + '<div class="profile-widget">'
+				str = str + '<div class="profile-img">'
+				str = str + '<a href="" class="avatar"><img src="'+response.data[i].empimg +'" alt=""></a>'
+				str = str + '</div>'
+				str = str + '<div class="dropdown profile-action">'
+				str = str + '<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>'
+				str = str + '<div class="dropdown-menu dropdown-menu-right">'
+				str = str + '<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_employee"><i class="fa fa-pencil m-r-5"></i> Edit</a>'
+				str = str + '</div>'
+				str = str + '</div>'
+				str = str + '<h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="/profile">'+ response.data[i].empname  +'</a></h4>'
+				str = str + '<div class="small text-muted">'+ response.data[i].empname+'</div>'
+				str = str + '</div>'
+				str = str + '</div>'
+
+				$("#empdev").append(str);
+				str = "";
+				}
+			}
+		});
+	}
+	
+</script>
+{% endblock %}

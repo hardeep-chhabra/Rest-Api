@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="description" content="Smarthr - Bootstrap Admin Template">
+		<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+        <meta name="robots" content="noindex, nofollow">
+        <title>Register - HRMS admin template</title>
+		
+		<!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="static/employee_management/assets/img/favicon.png">
+		
+		<!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="static/employee_management/assets/css/bootstrap.min.css">
+		
+		<!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="static/employee_management/assets/css/font-awesome.min.css">
+		
+		<!-- Main CSS -->
+        <link rel="stylesheet" href="static/employee_management/assets/css/style.css">
+		
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="static/employee_management/assets/js/html5shiv.min.js"></script>
+			<script src="static/employee_management/assets/js/respond.min.js"></script>
+		<![endif]-->
+    </head>
+    <body class="account-page">
+	
+		<!-- Main Wrapper -->
+        <div class="main-wrapper">
+			<div class="account-content">
+				<a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a>
+				<div class="container">
+				
+					<!-- Account Logo -->
+					<div class="account-logo">
+						<a href="index.html"><img src="static/employee_management/assets/img/logo2.jpg" alt="Dreamguy's Technologies"></a>
+					</div>
+					<!-- /Account Logo -->
+					
+					<div class="account-box">
+						<div class="account-wrapper">
+							<h3 class="account-title">Register</h3>
+							<p class="account-subtitle">Access to our dashboard</p>
+							
+							<!-- Account Form -->
+							<form method="POST" id="employeescreateid">
+								{% csrf_token %}
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">First Name <span class="text-danger">*</span></label>
+											<input class="form-control" name="first_name" id="first_name" type="text">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Last Name</label>
+											<input class="form-control" name="last_name" id="last_name" type="text">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Username <span class="text-danger">*</span></label>
+											<input class="form-control" name="username" id="username" type="text">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Email <span class="text-danger">*</span></label>
+											<input class="form-control" name="email" id="email" type="email">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Address</label>
+											<input class="form-control" name="address" id="address" type="text">
+										</div>
+									</div>
+									
+
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>Employee Profile Image</label>
+											<input class="form-control" name="employee_img" id="employee_img" type="file">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Password</label>
+											<input class="form-control" name="password" id="password" type="password">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Confirm Password</label>
+											<input class="form-control" name="confirm_password" id="confirm_password" type="password">
+										</div>
+									</div>
+									<div class="col-sm-6">  
+										<div class="form-group">
+											<label class="col-form-label">Joining Date <span class="text-danger">*</span></label>
+											<div class="cal-icon"><input class="form-control datetimepicker" name="joining_date" id="joining_date" type="text"></div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Phone </label>
+											<input class="form-control" name="phone" id="phone" type="text">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">City </label>
+											<input class="form-control" name="city" id="city" type="text">
+										</div>
+									</div>
+									
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Department <span class="text-danger">*</span></label>
+											<select class="select form-control" name="department_id" id="department_id">
+												{% for i in departmentsqs %}
+													<option value={{i.id}}>{{i.department_name}}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Designation <span class="text-danger">*</span></label>
+											<select class="select form-control" name="designation_id" id="designation_id">
+												{% for i in designationsqs %}
+													<option value={{i.id}}>{{i.employee_designation}}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Reporting Manager <span class="text-danger">*</span></label>
+											<select class="select form-control" name="reporting_manager_id" id="reporting_manager_id">
+												{% for i in employeesqs %}
+													<option value={{i.id}}>{{i.username}}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group text-center">
+									<button type="submit" class="btn btn-primary account-btn" type="submit">Register</button>
+								</div>
+								<div class="account-footer">
+									<p>Already have an account? <a href="/">Login</a></p>
+								</div>
+							</form>
+							<!-- /Account Form -->
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+		<!-- /Main Wrapper -->
+		
+		<!-- jQuery -->
+        <script src="static/employee_management/assets/js/jquery-3.5.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha512-YUkaLm+KJ5lQXDBdqBqk7EVhJAdxRnVdT2vtCzwPHSweCzyMgYV/tgGF4/dCyqtCC2eCphz0lRQgatGVdfR0ww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+		<!-- Bootstrap Core JS -->
+        <script src="static/employee_management/assets/js/popper.min.js"></script>
+        <script src="static/employee_management/assets/js/bootstrap.min.js"></script>
+		
+		<!-- Custom JS -->
+		<script src="static/employee_management/assets/js/app.js"></script>
+		
+		<script>
+		$(document).ready(function(){
+		$("#employeescreateid").submit(function(){
+			$("#employeescreateid").ajaxSubmit({
+				success: function (response) {
+					console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+						alert("Employee Created Succesfully!")
+					}
+
+				}
+			});
+			return false;
+		});
+
+	});
+		</script>
+    </body>
+</html>

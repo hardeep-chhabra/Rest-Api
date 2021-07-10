@@ -1,0 +1,333 @@
+{% extends 'employee_management/base.html' %}
+
+{% block content %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+<!-- Page Content -->
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row">
+<div class="col-sm-12">
+<h3 class="page-title">Task Reports</h3>
+<ul class="breadcrumb">
+<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+<li class="breadcrumb-item active">Task Reports</li>
+</ul>
+</div>
+<div class="col-auto float-right ml-auto">
+<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_todaytask"><i class="fa fa-plus"></i> Add Today's Task</a>
+</div>
+</div>
+</div>
+<!-- /Page Header -->
+
+<!-- Content Starts -->
+<!-- Search Filter -->
+<div class="row filter-row">
+
+<div class="col-sm-6 col-md-3">  
+<div class="form-group form-focus">
+<div class="cal-icon">
+<select class="form-control floating select">
+<option>
+Name1
+</option>
+<option>
+Name2
+</option>
+</select>
+</div>
+<label class="focus-label">Project Name</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3">  
+<div class="form-group form-focus">
+<div class="cal-icon">
+<select class="form-control floating select">
+<option>
+All
+</option>
+<option>
+Pending
+</option>
+<option>
+Completed
+</option>
+</select>
+</div>
+<label class="focus-label">Status</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3">  
+<a href="#" class="btn btn-success btn-block"> Search </a>  
+</div>     
+</div>
+<!-- /Search Filter -->
+
+<div class="row">
+<div class="col-md-12">
+<div class="table-responsive">
+<table class="table table-striped custom-table mb-0 datatable">
+<thead>
+<tr>
+<th>#</th>
+<th>Task Name</th>
+<th>Start Date</th>
+<th>End Date</th>
+<th>Status</th>
+<th>Assigned To</th>
+<th>Project</th>
+<th class="text-right">Actions</th>
+</tr>
+</thead>
+<tbody>
+
+	{% for task in tasks_qs %}
+<tr>
+<td>{{task.pk}}</td>
+<td>{{task.task_name}}</td>
+<td>{{task.start_date}}</td>
+<td>{{task.end_date}}</td>
+<td>
+<div class="dropdown action-label">
+<a href="#" class="btn btn-white btn-sm btn-rounded"><i class="fa fa-dot-circle-o text-success"></i> {{task.project.get_project_status_display}} </a>
+</div>
+</td>
+<td>
+<ul class="team-members">
+<li>
+<a href="#" data-toggle="tooltip" title="" data-original-title="{{task.task_developer.username}}"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
+</li>
+</ul>
+</td>
+<td>
+<h2>{{task.project.project_name}}</h2>
+</td>
+<td class="text-right">
+	<div class="dropdown dropdown-action">
+	<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+	<div class="dropdown-menu dropdown-menu-right">
+	<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edittaskqs{{task.pk}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+	<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_workdetail"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+	</div>
+	</div>
+</td>
+</tr>
+	{% endfor %}
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- /Content End -->
+
+<!-- /Page Content -->
+
+</div>
+<!-- /Page Content -->
+
+</div>
+<!-- /Page Wrapper -->
+<!-- /Main Wrapper -->
+
+
+<!-- Add Today Work Modal -->
+<div id="add_todaytask" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Add Today's Task details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<form method="POST">
+	{% csrf_token %}
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Project <span class="text-danger">*</span></label>
+<select class="select" name="project_id">
+	{% for project in projects_qs %}
+<option value="{{project.pk}}">{{project.project_name}}</option>
+	{% endfor %}
+</select>
+</div>
+<div class="form-group col-md-6">
+<div class="form-group">
+<label class="col-form-label">Task Name <span class="text-danger">*</span></label>
+<input name="task_name" class="form-control" type="text">
+</div>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-4">
+<label>Task Status <span class="text-danger">*</span></label>
+<select class="select" name="task_status">
+<option value="1">Assigned</option>
+<option value="2">Closed</option>
+<option value="3">Declined</option>
+<option value="4">In Process</option>
+<option value="5">Draft</option>
+<option value="6">Pending</option>
+<option value="7">Canceled</option>
+</select>
+</div>
+<div class="form-group col-sm-4">
+<label>Task Priority <span class="text-danger">*</span></label>
+<select class="select" name="task_priority">
+<option value="1">High</option>
+<option value="2">Medium</option>
+<option value="3">Low</option>
+</select>
+</div>
+<div class="form-group col-sm-4">
+<label>Estimated Hours <span class="text-danger">*</span></label>
+<input name="estimated_hours" class="form-control" type="text">
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Start Date <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input name="start_date" class="form-control datetimepicker" type="text">
+</div>
+</div>
+<div class="form-group col-sm-6">
+<label>End Date <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input name="end_date" class="form-control datetimepicker" type="text">
+</div>
+</div>
+</div>
+<div class="form-group">
+<label>Description <span class="text-danger">*</span></label>
+<textarea name="description" rows="4" class="form-control"></textarea>
+</div>
+<div class="form-group">
+<label>Upload Files</label>
+<input name="task_file" class="form-control" type="file" multiple>
+</div>
+<div class="submit-section">
+<button class="btn btn-primary submit-btn">Submit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- /Add Today Work Modal -->
+
+
+<!-- Edit Today Work Modal -->
+{% for task in tasks_qs %}
+<div id="edittaskqs{{task.pk}}" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">{{task.task_name}}</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<form method="POST">
+{% csrf_token %}
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Project <span class="text-danger">*</span></label>
+<select class="select" name="project_id">
+{% for project in projects_qs %}
+<option value="{{project.pk}}">{{project.project_name}}</option>
+{% endfor %}
+</select>
+</div>
+<div class="form-group col-md-6">
+<div class="form-group">
+<label class="col-form-label">Task Name <span class="text-danger">*</span></label>
+<input name="task_name" value="{{task.task_name}}" class="form-control" type="text">
+</div>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-4">
+<label>Task Status <span class="text-danger">*</span></label>
+<select class="select" name="task_status">
+<option value="1">Assigned</option>
+<option value="2">Closed</option>
+<option value="3">Declined</option>
+<option value="4">In Process</option>
+<option value="5">Draft</option>
+<option value="6">Pending</option>
+<option value="7">Canceled</option>
+</select>
+</div>
+<div class="form-group col-sm-4">
+<label>Task Priority <span class="text-danger">*</span></label>
+<select class="select" name="task_priority">
+<option value="1">High</option>
+<option value="2">Medium</option>
+<option value="3">Low</option>
+</select>
+</div>
+<div class="form-group col-sm-4">
+<label>Estimated Hours <span class="text-danger">*</span></label>
+<input name="estimated_hours" value="{{task.estimated_hours}}" class="form-control" type="text">
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Start Date <span class="text-danger">*</span></label>
+<div>
+<input readonly name="start_date" class="form-control" value="{{task.start_date}}" type="text">
+</div>
+</div>
+<div class="form-group col-sm-6">
+<label>End Date <span class="text-danger">*</span></label>
+<div>
+<input readonly name="end_date" value="{{task.end_date}}" class="form-control" type="text">
+</div>
+</div>
+</div>
+<div class="form-group">
+<label>Description <span class="text-danger">*</span></label>
+<textarea name="description" rows="4" class="form-control">{{task.description}}</textarea>
+</div>
+<div class="form-group">
+<label>Upload Files</label>
+<input name="task_file" class="form-control" type="file" multiple>
+</div>
+<strong>Timesheets created to complete this task</strong>
+{% for timesheet in task.task_timesheet.all %}
+<div class="row">
+	<div class="form-group col-sm-6">
+		<label>Description</label>
+		<textarea name="description" rows="4" class="form-control">{{timesheet.description}}</textarea>
+	</div>
+	<div class="form-group col-sm-6">
+		<label>Estimated Hours</label>
+		<input name="estimated_hours" value="{{timesheet.productive_hours}}" class="form-control" type="text">
+	</div>
+</div>
+<hr>
+{% endfor %}
+
+<div class="submit-section">
+<button class="btn btn-primary submit-btn">Submit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+<!-- /Edit Today Work Modal -->
+
+
+{% endblock %}

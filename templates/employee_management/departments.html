@@ -1,0 +1,121 @@
+{% extends 'employee_management/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+<!-- Page Content -->
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row align-items-center">
+<div class="col">
+<h3 class="page-title">Department</h3>
+<ul class="breadcrumb">
+<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+<li class="breadcrumb-item active">Department</li>
+</ul>
+</div>
+<div class="col-auto float-right ml-auto">
+<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_department"><i class="fa fa-plus"></i> Add Department</a>
+</div>
+</div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+<div class="col-md-12">
+<div>
+<table class="table table-striped custom-table mb-0 datatable">
+<thead>
+<tr>
+<th style="width: 30px;">#</th>
+<th>Department Name</th>
+<th class="text-right">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for dept in departmentlist %}
+<tr>
+<td>{{dept.id}}</td>
+<td>{{dept.department_name}}</td>
+<td class="text-right">
+<div class="dropdown dropdown-action">
+<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+<div class="dropdown-menu dropdown-menu-right">
+<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_department{{dept.id}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+</div>
+</div>
+<!-- Edit Department Modal -->
+<div id="edit_department{{dept.id}}" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Edit Department</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<form action="{% url 'employee_management:departmentupdate' dept.id %}" method="POST">
+{% csrf_token %}
+<div class="form-group">
+<label>Department Name <span class="text-danger">*</span></label>
+<input class="form-control" value="{{dept.department_name}}" name="department_name" type="text">
+</div>
+<div class="submit-section">
+<button class="btn btn-primary submit-btn">Save</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- /Edit Department Modal -->
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- /Page Content -->
+
+<!-- Add Department Modal -->
+<div id="add_department" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Add Department</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<form action="{% url 'employee_management:department' %}" method="POST" id="departmentscreateid">
+{% csrf_token %}
+<div class="form-group">
+<label>Department Code <span class="text-danger">*</span></label>
+<input class="form-control" name="department_code" id="department_code" type="text">
+</div>
+<div class="form-group">
+<label>Department Name <span class="text-danger">*</span></label>
+<input class="form-control" name="department_name" id="department_name" type="text">
+</div>
+<div class="submit-section">
+<button type="submit" class="btn btn-primary submit-btn">Submit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- /Add Department Modal -->
+
+</div>
+<!-- /Page Wrapper -->
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'employee_management/base.html' %}
+
+
+{% block title %}
+Employee Task Timesheet
+{% endblock %}
+
+
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+<!-- Page Content -->
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row align-items-center">
+<div class="col">
+<h3 class="page-title">Timesheet</h3>
+<ul class="breadcrumb">
+<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+<li class="breadcrumb-item active">Timesheet</li>
+</ul>
+</div>
+<div class="col-auto float-right ml-auto">
+<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_todaywork"><i class="fa fa-plus"></i> Add Today Work</a>
+</div>
+</div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+<div class="col-md-12">
+<div class="table-responsive">
+<table class="table table-striped custom-table mb-0 datatable">
+
+<thead>
+<tr>
+<th>Employee</th>
+<th>Date</th>
+<th>Projects</th>
+<th class="text-center">Assigned Hours</th>
+<th class="text-center">Hours</th>
+<th class="d-none d-sm-table-cell">Description</th>
+<th class="text-right">Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for item in timesheet %}
+<tr>
+<td>
+<h2 class="table-avatar">
+<a href="profile.html" class="avatar"><img alt="" src="static/employee_management/assets/img/profiles/avatar-02.jpg"></a>
+<a href="profile.html">{{item.employee.username}} <span>{{item.employee.designation}}</span></a>
+</h2>
+</td>
+<td>{{item.start_time}}
+</td>
+<td>
+<h2>{{item.task.task_name}}</h2>
+</td>
+<td class="text-center">
+{{item.productive_hours}}
+</td>
+<td class="text-center">
+	{{item.non_productive_hours}}
+</td>
+<td class="d-none d-sm-table-cell col-md-4">{{item.task.desciption}}
+</td>
+<td class="text-right">
+<div class="dropdown dropdown-action">
+<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+<div class="dropdown-menu dropdown-menu-right">
+<a class="dropdown-item" href="#" data-toggle="modal" data-target="#asdasdasd{{item.pk}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_workdetail"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+</div>
+</div>
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- /Page Content -->
+
+<!-- Add Today Work Modal -->
+<div id="add_todaywork" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Add Today Work details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<form method="POST">
+	{% csrf_token %}
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Task Name <span class="text-danger">*</span></label>
+<select class="select" name="task_pk">
+	{% for task in tasks_qs %}
+<option value="{{task.pk}}">{{task.task_name}}</option>
+	{% endfor %}
+</select>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-4">
+<label>Start Time <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input name="start_time" class="form-control datetimepicker" type="text" value="5 May 2019">
+</div>
+</div>
+<div class="form-group col-sm-4">
+<label>Total Hours <span class="text-danger">*</span></label>
+<input class="form-control" type="text" name="total_hours">
+</div>
+<div class="form-group col-sm-4">
+<label>Productive Hours <span class="text-danger">*</span></label>
+<input name="productive_hours" class="form-control" type="text">
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-6">
+<label>End Time <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input name="end_time" class="form-control datetimepicker" type="text">
+</div>
+</div>
+<div class="form-group col-sm-6">
+<label>Non-Productive Hours <span class="text-danger">*</span></label>
+<input name="non_productive_hours" class="form-control" type="text">
+</div>
+</div>
+<div class="form-group">
+<label>Description <span class="text-danger">*</span></label>
+<textarea rows="4" class="form-control"></textarea>
+</div>
+<div class="submit-section">
+<button class="btn btn-primary submit-btn">Submit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- /Add Today Work Modal -->
+
+<!-- Edit Today Work Modal -->
+{% for items in timesheet %}
+<div id="asdasdasd{{items.pk}}" class="modal custom-modal fade" role="dialog">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Edit Work Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+
+<div class="modal-body">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input type="hidden" name="timesheet_pk" value="{{items.pk}}">
+
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Project <span class="text-danger">*</span></label>
+<select class="select" name="task_name">
+{% for item in timesheet %}
+
+<option>{{item.task.task_name}}</option>
+
+{% endfor %}
+</select>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-4">
+<label>Deadline <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input class="form-control" type="text" name = "end_time" value="05/03/2019" readonly>
+</div>
+</div>
+<div class="form-group col-sm-4">
+<label>Total Hours <span class="text-danger">*</span></label>
+<input class="form-control" type="text" name="productive_hours" value="100" readonly>
+</div>
+<div class="form-group col-sm-4">
+<label>Remaining Hours <span class="text-danger">*</span></label>
+<input class="form-control" type="text" name="non_productive_hours" value="70" readonly>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-sm-6">
+<label>Date <span class="text-danger">*</span></label>
+<div class="cal-icon">
+<input class="form-control datetimepicker" value="03/03/2019" type="text" name="start_time">
+</div>
+</div>
+<div class="form-group col-sm-6">
+<label>Hours <span class="text-danger">*</span></label>
+<input class="form-control" type="text" value="{{items.non_productive_hours}}">
+</div>
+</div>
+<div class="form-group">
+<label>Description <span class="text-danger">*</span></label>
+<textarea rows="4" name="description" class="form-control">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel elit neque.</textarea>
+</div>
+<div class="submit-section">
+<button class="btn btn-primary submit-btn">Save</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+<!-- /Edit Today Work Modal -->
+
+<!-- Delete Today Work Modal -->
+<div class="modal custom-modal fade" id="delete_workdetail" role="dialog">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-body">
+<div class="form-header">
+<h3>Delete Work Details</h3>
+<p>Are you sure want to delete?</p>
+</div>
+<div class="modal-btn delete-action">
+<div class="row">
+<div class="col-6">
+<a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+</div>
+<div class="col-6">
+<a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Delete Today Work Modal -->
+
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}

@@ -1,0 +1,478 @@
+{% extends 'employee_management/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Companies</h3>
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item"><a href="/index">Dashboard</a></li>
+						<li class="breadcrumb-item active">Comapnies</li>
+					</ul>
+				</div>
+				<div class="col-auto float-right ml-auto">
+					<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_company"><i class="fa fa-plus"></i> Add Comapny</a>
+					<div class="view-icons">
+						<a href="/companies" class="grid-view btn btn-link active"><i class="fa fa-th"></i></a>
+						<a href="/companies-list" class="list-view btn btn-link"><i class="fa fa-bars"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+		
+		<!-- Search Filter -->
+		<div class="row filter-row">
+			<div class="col-sm-6 col-md-3">  
+				<div class="form-group form-focus">
+					<input type="text" id = "company_id" class="form-control floating">
+					<label class="focus-label">Company ID</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">  
+				<div class="form-group form-focus">
+					<input type="text" id="company_name" class="form-control floating">
+					<label class="focus-label">Company Name</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">  
+				<div class="form-group form-focus">
+					<input type="text" id="company_city" class="form-control floating">
+					<label class="focus-label">Company City</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">  
+				<button onclick="searchcompany()" class="btn btn-success btn-block"> Search </button>
+			</div>     
+		</div>
+		<!-- Search Filter -->
+		
+		<div class="row staff-grid-row">
+			{% for i in companiesqs %}
+				<div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+					<div class="profile-widget">
+						<div class="dropdown profile.html-action">
+							<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+							<div class="dropdown-menu dropdown-menu-right">
+								<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_client"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+							</div>
+						</div>
+						<h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="/company-profile">{{i.company_name}}</a></h4>
+						<h5 class="user-name m-t-10 mb-0 text-ellipsis"><a href="/company-profile">{{i.city}}</a></h5>
+						<div class="small text-muted">{{i.country}}</div>
+						<a href="client-profile.html" class="btn btn-white btn-sm m-t-10">View Profile</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<!-- /Page Content -->
+
+	<!-- Add Company Modal -->
+	<div id="add_company" class="modal custom-modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add Company</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="companies-create" method="POST" id="companiescreateid">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Company Name</label>
+									<input class="form-control" name="company_name" id="company_name" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Address 1</label>
+									<input class="form-control" name="address_1" id="address_1" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Address 2</label>
+									<input class="form-control" name="address_2" id="address_2" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">City </label>
+									<input class="form-control" name="city" id="city" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">State </label>
+									<input class="form-control" name="state" id="state" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Country </label>
+									<input class="form-control" name="country" id="country" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Zip/Postal Code </label>
+									<input class="form-control" name="zip_or_postal_code" id="zip_or_postal_code" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Regestration Number </label>
+									<input class="form-control" name="regestration_number" id="regestration_number" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">GST Number </label>
+									<input class="form-control" name="gst_number" id="gst_number" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Pan Number </label>
+									<input class="form-control" name="pan_number" id="pan_number" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Tan Number </label>
+									<input class="form-control" name="tan_number" id="tan_number" type="text">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label>Incorporation Date</label>
+									<div class="cal-icon">
+										<input class="form-control datetimepicker" name="incorporation_date" id="incorporation_date" type="text">
+									</div>
+
+								</div>
+							</div>
+							
+						</div>
+						
+						<div class="submit-section">
+							<button type="submit" class="btn btn-primary submit-btn">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Add Company Modal -->
+	
+	<!-- Edit Company Modal -->
+	<div id="edit_client" class="modal custom-modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Client</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">First Name <span class="text-danger">*</span></label>
+									<input class="form-control" value="Barry" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Last Name</label>
+									<input class="form-control" value="Cuda" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Username <span class="text-danger">*</span></label>
+									<input class="form-control" value="barrycuda" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Email <span class="text-danger">*</span></label>
+									<input class="form-control floating" value="barrycuda@example.com" type="email">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Password</label>
+									<input class="form-control" value="barrycuda" type="password">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Confirm Password</label>
+									<input class="form-control" value="barrycuda" type="password">
+								</div>
+							</div>
+							<div class="col-md-6">  
+								<div class="form-group">
+									<label class="col-form-label">Client ID <span class="text-danger">*</span></label>
+									<input class="form-control floating" value="CLT-0001" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Phone </label>
+									<input class="form-control" value="9876543210" type="text">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Company Name</label>
+									<input class="form-control" type="text" value="Global Technologies">
+								</div>
+							</div>
+						</div>
+						<div class="table-responsive m-t-15">
+							<table class="table table-striped custom-table">
+								<thead>
+									<tr>
+										<th>Module Permission</th>
+										<th class="text-center">Read</th>
+										<th class="text-center">Write</th>
+										<th class="text-center">Create</th>
+										<th class="text-center">Delete</th>
+										<th class="text-center">Import</th>
+										<th class="text-center">Export</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Projects</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+									<tr>
+										<td>Tasks</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+									<tr>
+										<td>Chat</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+									<tr>
+										<td>Estimates</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+									<tr>
+										<td>Invoices</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+									<tr>
+										<td>Timing Sheets</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+										<td class="text-center">
+											<input checked="" type="checkbox">
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="submit-section">
+							<button class="btn btn-primary submit-btn">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Edit Company Modal -->		
+</div>
+<!-- /Page Wrapper -->
+
+<script>
+
+$(document).ready(function(){
+		$("#companiescreateid").submit(function(){
+			$("#companiescreateid").ajaxSubmit({
+				success: function (response) {
+					if(typeof response =='object')
+					{
+						alert("Company Created Succesfully!")
+					}
+					else
+					{
+						alert("Something went Wronge!")
+					}
+				}
+			});
+			return false;
+		});
+
+	});
+
+	function searchcompany(){
+		var company_id = $('#company_id').val()
+		var company_name = $('#company_name').val()
+		var company_city = $('#company_city').val()
+
+		$.ajax({
+			type: "POST",
+			url: "companies-search",
+			data: {company_id:company_id , company_name:company_name,company_city : company_city} ,
+			success: function (response) {
+					console.log(response)
+				 debugger;
+				var str = "";
+				$("#clientdev").empty();
+				for(var i=0;i<response.data.length;i++)
+				{
+				str = str + '<div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">'
+				str = str + '<div class="profile-widget">'
+				str = str + '<div class="profile-img">'
+				str = str + '<a href="" class="avatar"><img src="'+response.data[i].client_name +'" alt=""></a>'
+				str = str + '</div>'
+				str = str + '<div class="dropdown profile-action">'
+				str = str + '<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>'
+				str = str + '<div class="dropdown-menu dropdown-menu-right">'
+				str = str + '<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_employee"><i class="fa fa-pencil m-r-5"></i> Edit</a>'
+				str = str + '</div>'
+				str = str + '</div>'
+				str = str + '<h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="/profile">'+ response.data[i].client_name  +'</a></h4>'
+				str = str + '<div class="small text-muted">'+ response.data[i].client_name+'</div>'
+				str = str + '</div>'
+				str = str + '</div>'
+
+				$("#clientdev").append(str);
+				str = "";
+				}
+			}
+		});
+	}
+
+</script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+			
